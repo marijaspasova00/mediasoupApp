@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    
+    <title>Mediasoup Video App</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<!-- <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediasoup Client</title>
+    Include the Tailwind CSS stylesheet -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head> --> 
+<body class="bg-gray-100 min-h-full min-w-full">
+
+<div class="container mx-auto p-8 min-h-full min-w-full">
+    <h1 class="text-2xl font-semibold mb-4">Mediasoup Client</h1>
+
+    <div class="flex space-x-4 mb-4">
+        <button id="btn_webcam" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+            Start Webcam
+        </button>
+        <button id="btn_screen" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+            Share Screen
+        </button>
+        <button id="btn_subscribe" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+            Subscribe
+        </button>
+    </div>
+
+    <p id="webcam_status" class="mb-2">Webcam Status: </p>
+    <p id="screen_status" class="mb-2">Screen Sharing Status: </p>
+    <p id="subscribe_status" class="mb-4">Subscribe Status: </p>
+
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Local Video</h2>
+            <video id="localVideo" class="w-full rounded shadow" autoplay muted></video>
+        </div>
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Remote Video</h2>
+            <video id="remoteVideo" class="w-full rounded shadow" autoplay></video>
+        </div>
+    </div>
+</div>
+<script src="main.js"></script>
+</body>
+</html>
+</body>
+</html>
