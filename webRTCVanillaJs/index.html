@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebRTC Application</title>
+    <!-- Add Bootstrap CSS link -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa; /* Light gray background */
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+        padding-top: 40px;
+      }
+
+      h1 {
+        color: #007bff; /* Blue heading text */
+      }
+
+      .btn {
+        margin: 5px;
+      }
+
+      #localVideo,
+      #remoteVideo {
+        width: 100%; /* Make videos responsive */
+        max-width: 480px; /* Limit video width */
+        height: auto; /* Maintain aspect ratio */
+        border: 1px solid #007bff; /* Blue border */
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Box shadow */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>WebRTC Application</h1>
+      <button id="startButton" class="btn btn-primary">Start Camera</button>
+      <button id="muteButton" class="btn btn-secondary">Mute Audio</button>
+      <button id="screenShareButton" class="btn btn-success">
+        Screen Share
+      </button>
+      <button id="subscribeButton" class="btn btn-info">Subscribe</button>
+      <br /><br />
+      <div class="row">
+        <div class="col">
+          <video id="localVideo" autoplay muted></video>
+        </div>
+        <div class="col">
+          <video id="remoteVideo" autoplay></video>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      let localStream;
+      let remoteStream;
+      let peerConnection;
+      let localCameraStream;
+      let isAudioMuted = false;
+
+      const localVideo = document.getElementById("localVideo");
+      const remoteVideo = document.getElementById("remoteVideo");
+      const startButton = document.getElementById("startButton");
+      const muteButton = document.getElementById("muteButton");
+      const screenShareButton = document.getElementById("screenShareButton");
+      const subscribeButton = document.getElementById("subscribeButton");
+
+      startButton.addEventListener("click", startCamera);
+      muteButton.addEventListener("click", toggleAudio);
+      screenShareButton.addEventListener("click", startScreenShare);
+      subscribeButton.addEventListener("click", subscribeToStream);
+
+      async function startCamera() {
+        try {
+          localStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          localVideo.srcObject = localStream;
+        } catch (error) {
+          console.error("Error accessing camera:", error);
+        }
+      }
+      async function startCamera() {
+        try {
+          localCameraStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
+          localVideo.srcObject = localCameraStream;
+        } catch (error) {
+          console.error("Error accessing camera:", error);
+        }
+      }
+
+      function toggleAudio() {
+        if (localStream) {
+          const audioTracks = localStream.getAudioTracks();
+          audioTracks.forEach((track) => {
+            track.enabled = !track.enabled;
+          });
+          muteButton.textContent = audioTracks[0].enabled
+            ? "Mute Audio"
+            : "Unmute Audio";
+        }
+      }
+      function toggleAudio() {
+        if (localCameraStream) {
+          const audioTracks = localCameraStream.getAudioTracks();
+          audioTracks.forEach((track) => {
+            track.enabled = !isAudioMuted; // Toggle audio state
+          });
+          isAudioMuted = !isAudioMuted; // Update the audio mute state
+          muteButton.textContent = isAudioMuted ? "Unmute Audio" : "Mute Audio";
+        }
+      }
+
+      async function startScreenShare() {
+        try {
+          const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+          });
+          localVideo.srcObject = screenStream;
+        } catch (error) {
+          console.error("Error sharing screen:", error);
+        }
+      }
+
+      function subscribeToStream() {
+        if (localStream && !remoteStream) {
+          peerConnection = new RTCPeerConnection();
+
+          localStream.getTracks().forEach((track) => {
+            peerConnection.addTrack(track, localStream);
+          });
+
+          peerConnection.ontrack = (event) => {
+            remoteStream = event.streams[0];
+            remoteVideo.srcObject = remoteStream;
+          };
+
+          peerConnection
+            .createOffer()
+            .then((offer) => {
+              return peerConnection.setLocalDescription(offer);
+            })
+            .then(() => {})
+            .catch((error) => {
+              console.error("Error creating offer:", error);
+            });
+        }
+      }
+      function subscribeToStream() {
+        if (localCameraStream && !remoteStream) {
+          remoteStream = new MediaStream();
+
+          localCameraStream.getTracks().forEach((track) => {
+            remoteStream.addTrack(track);
+          });
+
+          remoteVideo.srcObject = remoteStream;
+        }
+      }
+    </script>
+  </body>
+</html>
